@@ -1,0 +1,302 @@
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/space-grotesk";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  .theme {
+    --font-heading: 'Space Grotesk Variable', sans-serif;
+    --font-sans: 'Geist Variable', sans-serif;
+  }
+  
+  :root {
+    --background: 210 40% 96.1%; /* slate-100 */
+    --foreground: 222.2 84% 4.9%;
+    --card: 210 40% 98%; /* slate-50 */
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 210 40% 98%; /* slate-50 */
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    /* Primary: Deep Blue #2563EB */
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    
+    /* Secondary: Soft Mint #D1FAE5 */
+    --secondary: 149 80% 90%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    
+    /* Muted */
+    --muted: 214.3 31.8% 91.4%; /* slate-200 */
+    --muted-foreground: 215.3 19.3% 34.5%; /* slate-600 */
+    
+    /* Accent: Sky Blue #38BDF8 */
+    --accent: 199 89% 48%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    
+    /* Destructive: Coral #F97316 */
+    --destructive: 25 95% 53%;
+    --destructive-foreground: 210 40% 98%;
+    
+    /* Border, Input, Ring */
+    --border: 212.7 26.8% 83.9%; /* slate-300 */
+    --input: 212.7 26.8% 83.9%; /* slate-300 */
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.75rem; /* Accessibility Overrides */
+  }
+
+  /* Mobility Mode: Enlarge clickable targets */
+  .mobility-mode button, 
+  .mobility-mode a, 
+  .mobility-mode input, 
+  .mobility-mode select, 
+  .mobility-mode [role="button"] {
+    min-height: 48px !important;
+    min-width: 48px !important;
+  }
+
+  /* Calm Mode: Soften colors and reduce contrast slightly for cognitive ease */
+  .calm-mode {
+    --background: 210 20% 98%; /* Softer off-white */
+    --foreground: 220 15% 30%; /* Softer dark text */
+    --primary: 220 50% 60%; /* Desaturated blue */
+    --primary-foreground: 210 40% 98%;
+    --muted: 210 15% 90%;
+    --muted-foreground: 220 15% 45%;
+    --border: 210 15% 85%;
+  }
+
+  .dark.calm-mode {
+    --background: 220 15% 15%; /* Lighter dark background */
+    --foreground: 210 20% 90%; /* Softer light text */
+    --primary: 220 40% 50%;
+    --primary-foreground: 210 20% 95%;
+    --muted: 220 15% 25%;
+    --muted-foreground: 210 15% 75%;
+    --border: 220 15% 25%;
+  }
+
+  .high-contrast {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --primary: 240 100% 25%;
+    --muted: 0 0% 90%;
+    --border: 0 0% 0%;
+  }
+
+  .dark.high-contrast {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --primary: 240 100% 75%;
+    --muted: 0 0% 20%;
+    --border: 0 0% 100%;
+  }
+
+  .reduced-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Focus Manager Indicator */
+  .keyboard-navigating *:focus-visible {
+    outline: 4px solid hsl(var(--primary)) !important;
+    outline-offset: 4px !important;
+  }
+
+  .dark {
+    --background: 222 50% 5.5%; /* #070B14 */
+    --foreground: 210 40% 98%; /* #F8FAFC */
+    --card: 222 43% 10.5%; /* #0F1726 */
+    --card-foreground: 214.3 31.8% 91.4%; /* #CBD5E1 */
+    --popover: 222 43% 10.5%;
+    --popover-foreground: 210 40% 98%;
+    
+    --primary: 221.2 83.2% 53.3%; /* #3B82F6 */
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 222 35% 15%; /* #111A2B */
+    --secondary-foreground: 210 40% 98%;
+    
+    --muted: 222 30% 16%;
+    --muted-foreground: 215.4 20% 65%; /* #A7B0C0 */
+    
+    --accent: 199 89% 48%;
+    --accent-foreground: 210 40% 98%;
+    
+    --destructive: 25 95% 53%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 222 25% 18%; /* rgba(255,255,255,0.08) */
+    --input: 222 25% 18%;
+    --ring: 221 83% 53%;
+  }
+
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html.dark body {
+    background-color: #070B14;
+    color: #F8FAFC;
+  }
+  html:not(.dark) body {
+    background: linear-gradient(135deg, #f8fafc, #eff6ff, #f0f9ff);
+  }
+  html, body, #root {
+    min-height: 100%;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .bg-hero-gradient {
+    background: linear-gradient(135deg, #eff6ff, #f0f9ff, #ecfdf5);
+  }
+  
+  .dot-grid {
+    background-image: radial-gradient(hsl(var(--border) / 0.8) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: center;
+  }
+  
+  .v2-card {
+    @apply bg-white border border-border rounded-2xl transition-all duration-300 relative z-10;
+    border-width: 0.5px;
+  }
+
+  .dark .v2-card {
+    background-color: #0F1726;
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  
+  .bg-dashboard-gradient {
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+  }
+  
+  .premium-card {
+    @apply rounded-3xl border border-white/30 backdrop-blur-md bg-white/85 shadow-lg transition-all duration-300;
+    border-radius: 24px;
+  }
+  
+  .premium-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  }
+
+  .dark .premium-card {
+    background: rgba(15, 23, 38, 0.85); /* #0F1726 */
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  .dark .premium-card:hover {
+    background: rgba(22, 32, 51, 0.95);
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+  
+  .dark .bg-hero-gradient {
+    background: #070B14;
+    background: radial-gradient(circle at top center, #111A2B 0%, #070B14 80%);
+  }
+  
+  .dark .bg-dashboard-gradient {
+    background: #070B14;
+  }
+
+  /* Button Overrides */
+  .dark .bg-primary {
+    background: linear-gradient(90deg, #2563EB, #4F46E5) !important;
+    border: none;
+    color: #F8FAFC !important;
+    transition: all 0.3s ease;
+  }
+  
+  .dark .bg-primary:hover {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+    transform: scale(1.02);
+  }
+
+  .dark .bg-secondary {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #F8FAFC !important;
+    transition: all 0.3s ease;
+  }
+
+  .dark .bg-secondary:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
+  }
+}
+
+/* Custom Scrollbars in Dark Mode */
+html.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+html.dark ::-webkit-scrollbar-track {
+  background: #070B14;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #162033;
+  border-radius: 4px;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #2563EB;
+}
+
+/* Recharts Dark Tooltip Global Fix */
+html.dark .recharts-default-tooltip {
+  background-color: #0F1726 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #F8FAFC !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Simplify Mode — hides decorative elements, standardizes typography */
+body.simplify-mode .bg-clip-text {
+  -webkit-text-fill-color: unset !important;
+  background: none !important;
+  color: inherit !important;
+}
+
+body.simplify-mode .bg-hero-gradient,
+body.simplify-mode .bg-dashboard-gradient,
+body.simplify-mode .dot-grid {
+  background: var(--background) !important;
+}
+
+body.simplify-mode .premium-card:hover,
+body.simplify-mode .v2-card:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+body.simplify-mode .dot-grid-layer,
+body.simplify-mode .icon-cluster-layer,
+body.simplify-mode .connecting-line-layer {
+  display: none !important;
+}
+
+body.simplify-mode .animate-bounce,
+body.simplify-mode .animate-pulse,
+body.simplify-mode .animate-spin,
+body.simplify-mode .animate-ping {
+  animation: none !important;
+}
+
+/* Panic Mode — dims everything except the panic overlay */
+body.panic-mode > *:not([class*="z-[200]"]) {
+  filter: brightness(0.3) blur(2px);
+  pointer-events: none;
+}

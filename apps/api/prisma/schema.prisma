@@ -1,0 +1,303 @@
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+}
+
+model User {
+  id                   String                 @id @default(uuid())
+  email                String                 @unique
+  passwordHash         String
+  role                 String                 // 'user' | 'admin' | 'employer'
+  isVerified           Boolean                @default(false)
+  verifiedAt           DateTime?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  profile              Profile?
+  employerDetail       EmployerDetail?
+  assessments          Assessment[]
+  jobMatches           JobMatch[]
+  courseProgress       CourseProgress[]
+  interviewSessions    InterviewSession[]
+  resumes              Resume[]
+  accommodationLetters AccommodationLetter[]
+  mentorshipConnections MentorshipConnection[]
+  applications         Application[]
+  savedItems           SavedItem[]
+  calendarEvents       CalendarEvent[]
+  auditLogs            AuditLog[]
+  accessibilityAudits  AccessibilityAudit[]
+}
+
+model VerificationOTP {
+  id        String   @id @default(uuid())
+  userId    String
+  email     String
+  otpHash   String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  attempts  Int      @default(0)
+  used      Boolean  @default(false)
+}
+
+model Profile {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name              String
+  age               String
+  gender            String
+  city              String
+  state             String
+  phone             String
+  disabilityType    String
+  severity          String
+  assistiveDevices  String
+  communicationMode String
+  educationLevel    String
+  degree            String
+  college           String
+  certifications    String
+  skills            String[]
+  workMode          String
+  accessibilityNeeds String[]
+  aiSummary         String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Assessment {
+  id                   String   @id @default(uuid())
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  score                Int
+  answers              Json
+  resultStrength       Int
+  resultWeakness       Int
+  resultConfidence     Int
+  resultLearningStyle  String
+  resultCareerReadiness Int
+  createdAt            DateTime @default(now())
+}
+
+model Job {
+  id             String       @id @default(uuid())
+  title          String
+  company        String
+  salary         String
+  location       String
+  workMode       String
+  requiredSkills String[]
+  accessibility  String[]
+  demand         String
+  description    String
+  isReserved     Boolean      @default(false)
+  department     String?
+  category       String?
+  state          String?
+  deadline       String?
+  docs           String[]
+  createdAt      DateTime     @default(now())
+  jobMatches     JobMatch[]
+  applications   Application[]
+}
+
+model JobMatch {
+  id                 String   @id @default(uuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobId              String
+  job                Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  fitScore           Int
+  accommodationScore Int
+  explanation        String
+  createdAt          DateTime @default(now())
+}
+
+model Course {
+  id           String           @id @default(uuid())
+  title        String
+  duration     String
+  difficulty   String
+  thumbnail    String
+  createdAt    DateTime         @default(now())
+  progressList CourseProgress[]
+}
+
+model CourseProgress {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress  Int      // 0 to 100
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InterviewSession {
+  id                     String   @id @default(uuid())
+  userId                 String
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mode                   String   // 'text' | 'voice' | 'video'
+  questionText           String
+  answerText             String
+  feedbackScore          Int
+  feedbackConfidence     Int
+  feedbackCommunication  Int
+  feedbackClarity        Int
+  feedbackTechKnowledge  Int
+  feedbackSuggestions    String[]
+  createdAt              DateTime @default(now())
+}
+
+model Resume {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   Json
+  isPublic  Boolean  @default(false)
+  fileUrl   String?
+  createdAt DateTime @default(now())
+}
+
+model AccommodationLetter {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  letterText     String
+  disability     String
+  needs          String[]
+  additionalInfo String?
+  createdAt      DateTime @default(now())
+}
+
+model Mentor {
+  id          String                 @id @default(uuid())
+  name        String
+  title       String
+  disability  String
+  careerPath  String
+  experience  String
+  company     String
+  bio         String
+  available   Boolean
+  rating      Float
+  sessions    Int
+  emoji       String
+  createdAt   DateTime               @default(now())
+  connections MentorshipConnection[]
+}
+
+model MentorshipConnection {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mentorId  String
+  mentor    Mentor   @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  status    String   // 'pending' | 'active' | 'completed' | 'declined'
+  createdAt DateTime @default(now())
+}
+
+model Application {
+  id        String                     @id @default(uuid())
+  userId    String
+  user      User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobId     String
+  job       Job                        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  status    String                     // 'Applied' | 'Interview' | 'Offer' | 'Rejected'
+  appliedAt DateTime                   @default(now())
+  events    ApplicationTrackerEvent[]
+}
+
+model ApplicationTrackerEvent {
+  id            String      @id @default(uuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  eventName     String
+  eventDate     String
+  description   String
+  createdAt     DateTime    @default(now())
+}
+
+model EmployerDetail {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName        String
+  diversityScore     Int
+  accessibilityScore Int
+  hiringStatus       String   // 'Active' | 'Hiring Paused'
+  remoteSupport      Boolean
+  logo               String
+  createdAt          DateTime @default(now())
+}
+
+model AccessibilityAudit {
+  id                   String   @id @default(uuid())
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  physicalRamp         Boolean
+  physicalElevator     Boolean
+  physicalRestroom     Boolean
+  physicalParking      Boolean
+  techScreenreader     Boolean
+  techCaptions         Boolean
+  techSoftware         Boolean
+  commSign             Boolean
+  commDocs             Boolean
+  policyHiring         Boolean
+  policyTraining       Boolean
+  scoreOverall         Int
+  scoreInfrastructure  Int
+  scoreTechnology      Int
+  scoreCulturePolicy   Int
+  createdAt            DateTime @default(now())
+}
+
+model SavedItem {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // 'job' | 'course' | 'mentor' | 'employer'
+  entityId  String
+  title     String
+  entity    String
+  location  String
+  savedAt   String
+  status    String?
+  deadline  String?
+  createdAt DateTime @default(now())
+}
+
+model CalendarEvent {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  date      String
+  type      String
+  details   String?
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  adminId      String
+  admin        User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  action       String
+  targetUserId String?
+  details      String
+  createdAt    DateTime @default(now())
+}
+
+model DocumentChunk {
+  id           String   @id @default(uuid())
+  documentType String   // 'skills_taxonomy' | 'accommodation_policy' | 'sample_letter' | 'interview_question' | 'accessibility_criteria'
+  chunkText    String
+  metadata     Json
+  createdAt    DateTime @default(now())
+}
